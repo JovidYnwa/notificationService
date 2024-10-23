@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -9,17 +10,16 @@ type Event struct {
 	OrderType  string    `json:"orderType"`
 	SessionID  string    `json:"sessionId"`
 	Card       string    `json:"card"`
-	EventDate   time.Time `json:"eventDate"`
+	EventDate  time.Time `json:"eventDate"`
 	WebsiteUrl string    `json:"websiteUrl"`
 }
 
+func YO(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "yo")
+}
+
 func main() {
-	e1 := Event{
-		OrderType:  "Purchase",
-		SessionID:  "29827525-06c9-4b1e-9d9b-7c4584e82f56",
-		Card:       "44331409",
-		EventDate:  time.Now(),
-		WebsiteUrl: "https://amazon.co",
-	}
-	fmt.Println(e1)
+	http.HandleFunc("/", Yo)
+	fmt.Println("server is on port 3000!")
+	http.ListenAndServe(":3000", nil)
 }
