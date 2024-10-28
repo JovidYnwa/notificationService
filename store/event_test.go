@@ -25,7 +25,7 @@ func TestMemoryStore(t *testing.T) {
 		t.Errorf("Failed to get all events: %v", err)
 	}
 
-	if events[0].SessionID != "test-session" {
+	if events[0].SessionID != "nurov-session" {
 		t.Errorf("Expected session ID 'nurov-session', got '%s'", events[0].SessionID)
 	}
 
