@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"notification-service/store"
+	"notification-service/worker"
+	"time"
 )
 
 type Server struct {
@@ -39,6 +41,10 @@ func main() {
 	flag.Parse()
 
 	storage := store.NewMemoryStore()
+
+	// Start worker
+	notificationWorker := worker.NewNotificationWorker(storage, 10*time.Second)
+	go notificationWorker.Start()
 
 	server := NewServer(storage)
 	http.HandleFunc("/event", server.HandleEvent)
