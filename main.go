@@ -1,25 +1,37 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
+	"flag"
+	"log"
 	"net/http"
-	"time"
+	"notification-service/store"
 )
 
-type Event struct {
-	OrderType  string    `json:"orderType"`
-	SessionID  string    `json:"sessionId"`
-	Card       string    `json:"card"`
-	EventDate  time.Time `json:"eventDate"`
-	WebsiteUrl string    `json:"websiteUrl"`
+type Server struct {
+	storage store.EventStore
 }
 
-func YO(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "yo")
+func NewServer(storage store.EventStore) *Server {
+	return &Server{
+		storage: storage,
+	}
+}
+
+func HandleEvent(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"status": "success"})
 }
 
 func main() {
-	http.HandleFunc("/", Yo)
-	fmt.Println("server is on port 3000!")
-	http.ListenAndServe(":3000", nil)
+	port := flag.String("port", ":3000", "server port")
+	flag.Parse()
+
+	http.HandleFunc("/event", HandleEvent)
+
+	log.Printf("Server starting on %s...", *port)
+	if err := http.ListenAndServe(*port, nil); err != nil {
+		log.Fatal(err)
+	}
 }
